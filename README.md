@@ -109,7 +109,7 @@ fishpond-monitoring/
 
 | System Overview | Mobile Dashboard | Hardware Setup | Schematic |
 |---|---|---|---|
-| ![nama](docs/images/nama-file.jpg) | ![nama](docs/images/nama-file.jpg) | ![nama](docs/images/nama-file.jpg) | ![pcb](schematic/pcb_fishpond.png) ![schematic](schematic/schematic_fishpond.png) |
+| ![overview](docs/images/project_overview.jpeg) | ![dashboard](docs/images/dashboard.png) | ![setup](docs/images/hardware_tes.jpeg) | ![pcb](schematic/pcb_fishpond.png) ![schematic](schematic/schematic_fishpond.png) |
 
 ---
 

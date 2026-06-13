@@ -1,4 +1,4 @@
-# 🐟 IoT-Based Water Quality Control and Monitoring System for Nile Tilapia Pond
+# 🐟 IoT-Based Water Quality Control and Monitoring System for Tilapia Fish Ponds
 
 An ESP32-based IoT system for automated multi-parameter water quality monitoring and control in a Nile tilapia (*Oreochromis niloticus*) aquaculture pond, with real-time data visualization via Flutter mobile dashboard and Firebase cloud integration.
 

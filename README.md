@@ -107,9 +107,9 @@ fishpond-monitoring/
 
 ## 📸 Documentation
 
-| System Overview | Mobile Dashboard | Hardware Setup |
-|---|---|---|
-| ![nama](docs/images/nama-file.jpg) | ![nama](docs/images/nama-file.jpg) | ![nama](docs/images/nama-file.jpg) |
+| System Overview | Mobile Dashboard | Hardware Setup | Schematic |
+|---|---|---|---|
+| ![nama](docs/images/nama-file.jpg) | ![nama](docs/images/nama-file.jpg) | ![nama](docs/images/nama-file.jpg) | ![pcb](schematic/pcb_fishpond.png) ![schematic](schematic/schematic_fishpond.png) |
 
 ---
 

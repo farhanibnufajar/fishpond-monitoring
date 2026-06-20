@@ -24,6 +24,37 @@ const char* mqtt_user     = "Test123";
 const char* mqtt_password = "Test1234";
 
 // =====================================================
+// TOPIC PREFIX
+// HARUS SAMA dengan field "topic_prefix" di Firestore
+// collection "kolam" untuk kolam ini. Kalau device
+// dipindah ke kolam lain, ganti hanya baris ini.
+// =====================================================
+const char* TOPIC_PREFIX = "kolam_tKexNTlR";
+
+// =====================================================
+// TOPIC MQTT — dibangun otomatis dari TOPIC_PREFIX
+// =====================================================
+String TOPIC_LWT                      = String(TOPIC_PREFIX) + "/device/wifi";
+String TOPIC_STATUS_MODE              = String(TOPIC_PREFIX) + "/status/mode";
+String TOPIC_STATUS_SAFE_MODE         = String(TOPIC_PREFIX) + "/status/safe_mode";
+String TOPIC_STATUS_SYSTEM            = String(TOPIC_PREFIX) + "/status/system";
+String TOPIC_STATUS_AERATOR_BACKUP    = String(TOPIC_PREFIX) + "/status/aerator_backup";
+String TOPIC_STATUS_PENGADUK_DOLOMIT  = String(TOPIC_PREFIX) + "/status/pengaduk_dolomit";
+String TOPIC_STATUS_POMPA_DOLOMIT     = String(TOPIC_PREFIX) + "/status/pompa_dolomit";
+
+String TOPIC_SENSOR_SUHU              = String(TOPIC_PREFIX) + "/sensor/suhu";
+String TOPIC_SENSOR_PH                = String(TOPIC_PREFIX) + "/sensor/ph";
+String TOPIC_SENSOR_DO                = String(TOPIC_PREFIX) + "/sensor/do";
+
+String TOPIC_SYSTEM_MODE              = String(TOPIC_PREFIX) + "/system/mode";
+String TOPIC_CONTROL_AERATOR_BACKUP   = String(TOPIC_PREFIX) + "/control/aerator_backup";
+String TOPIC_CONTROL_PENGADUK_DOLOMIT = String(TOPIC_PREFIX) + "/control/pengaduk_dolomit";
+String TOPIC_CONTROL_POMPA_DOLOMIT    = String(TOPIC_PREFIX) + "/control/pompa_dolomit";
+
+String TOPIC_CONTROL_WILDCARD         = String(TOPIC_PREFIX) + "/control/#";
+String TOPIC_SYSTEM_WILDCARD          = String(TOPIC_PREFIX) + "/system/#";
+
+// =====================================================
 // SENSOR PIN
 // =====================================================
 #define PH_PIN    34
@@ -80,7 +111,6 @@ PubSubClient client(espClient);
 // =====================================================
 // LAST WILL
 // =====================================================
-const char* LWT_TOPIC   = "kolam1/device/wifi";
 const char* LWT_PAYLOAD = "{\"connected\":false}";
 
 // =====================================================
@@ -316,7 +346,7 @@ void publishModeStatus() {
 
   serializeJson(doc, buffer);
 
-  client.publish("kolam1/status/mode", buffer, true);
+  client.publish(TOPIC_STATUS_MODE.c_str(), buffer, true);
 }
 
 // =====================================================
@@ -334,7 +364,7 @@ void publishSafeModeStatus() {
 
   serializeJson(doc, buffer);
 
-  client.publish("kolam1/status/safe_mode", buffer, true);
+  client.publish(TOPIC_STATUS_SAFE_MODE.c_str(), buffer, true);
 }
 
 // =====================================================
@@ -358,7 +388,7 @@ void publishWifiStatus(bool connected) {
 
   serializeJson(doc, buffer);
 
-  client.publish(LWT_TOPIC, buffer, true);
+  client.publish(TOPIC_LWT.c_str(), buffer, true);
 }
 
 // =====================================================
@@ -376,7 +406,7 @@ void publishSystemStatus(String status) {
 
   serializeJson(doc, buffer);
 
-  client.publish("kolam1/status/system", buffer, true);
+  client.publish(TOPIC_STATUS_SYSTEM.c_str(), buffer, true);
 }
 
 // =====================================================
@@ -411,7 +441,7 @@ void activateSafeMode() {
 
   digitalWrite(RELAY_AERATOR_BACKUP, LOW);
 
-  publishRelayStatus("kolam1/status/aerator_backup", true);
+  publishRelayStatus(TOPIC_STATUS_AERATOR_BACKUP.c_str(), true);
 
   pengadukDolomitState = false;
   pompaDolomitState    = false;
@@ -441,7 +471,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   if (error) return;
 
-  if (String(topic) == "kolam1/system/mode") {
+  if (String(topic) == TOPIC_SYSTEM_MODE) {
 
     String mode = doc["mode"];
 
@@ -456,31 +486,31 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
     bool state = doc["state"];
 
-    if (String(topic) == "kolam1/control/aerator_backup") {
+    if (String(topic) == TOPIC_CONTROL_AERATOR_BACKUP) {
 
       aeratorBackupState = state;
 
       digitalWrite(RELAY_AERATOR_BACKUP, state ? LOW : HIGH);
 
-      publishRelayStatus("kolam1/status/aerator_backup", state);
+      publishRelayStatus(TOPIC_STATUS_AERATOR_BACKUP.c_str(), state);
     }
 
-    if (String(topic) == "kolam1/control/pengaduk_dolomit") {
+    if (String(topic) == TOPIC_CONTROL_PENGADUK_DOLOMIT) {
 
       pengadukDolomitState = state;
 
       digitalWrite(RELAY_PENGADUK_DOLOMIT, state ? LOW : HIGH);
 
-      publishRelayStatus("kolam1/status/pengaduk_dolomit", state);
+      publishRelayStatus(TOPIC_STATUS_PENGADUK_DOLOMIT.c_str(), state);
     }
 
-    if (String(topic) == "kolam1/control/pompa_dolomit") {
+    if (String(topic) == TOPIC_CONTROL_POMPA_DOLOMIT) {
 
       pompaDolomitState = state;
 
       digitalWrite(RELAY_POMPA_DOLOMIT, state ? LOW : HIGH);
 
-      publishRelayStatus("kolam1/status/pompa_dolomit", state);
+      publishRelayStatus(TOPIC_STATUS_POMPA_DOLOMIT.c_str(), state);
     }
   }
 }
@@ -501,7 +531,7 @@ void reconnect() {
           clientId.c_str(),
           mqtt_user,
           mqtt_password,
-          LWT_TOPIC,
+          TOPIC_LWT.c_str(),
           1,
           true,
           LWT_PAYLOAD
@@ -509,8 +539,8 @@ void reconnect() {
 
       Serial.println(" connected!");
 
-      client.subscribe("kolam1/control/#");
-      client.subscribe("kolam1/system/#");
+      client.subscribe(TOPIC_CONTROL_WILDCARD.c_str());
+      client.subscribe(TOPIC_SYSTEM_WILDCARD.c_str());
 
       publishModeStatus();
       publishSafeModeStatus();
@@ -537,7 +567,7 @@ void autoControl(float ph, float doValue) {
 
     digitalWrite(RELAY_AERATOR_BACKUP, LOW);
 
-    publishRelayStatus("kolam1/status/aerator_backup", true);
+    publishRelayStatus(TOPIC_STATUS_AERATOR_BACKUP.c_str(), true);
 
     return;
   }
@@ -554,7 +584,7 @@ void autoControl(float ph, float doValue) {
 
     digitalWrite(RELAY_PENGADUK_DOLOMIT, LOW);
 
-    publishRelayStatus("kolam1/status/pengaduk_dolomit", true);
+    publishRelayStatus(TOPIC_STATUS_PENGADUK_DOLOMIT.c_str(), true);
   }
 
   if (dosingState == MIXING) {
@@ -565,13 +595,13 @@ void autoControl(float ph, float doValue) {
 
       digitalWrite(RELAY_PENGADUK_DOLOMIT, HIGH);
 
-      publishRelayStatus("kolam1/status/pengaduk_dolomit", false);
+      publishRelayStatus(TOPIC_STATUS_PENGADUK_DOLOMIT.c_str(), false);
 
       pompaDolomitState = true;
 
       digitalWrite(RELAY_POMPA_DOLOMIT, LOW);
 
-      publishRelayStatus("kolam1/status/pompa_dolomit", true);
+      publishRelayStatus(TOPIC_STATUS_POMPA_DOLOMIT.c_str(), true);
 
       dosingState = DOSING;
 
@@ -587,13 +617,13 @@ void autoControl(float ph, float doValue) {
 
       digitalWrite(RELAY_POMPA_DOLOMIT, HIGH);
 
-      publishRelayStatus("kolam1/status/pompa_dolomit", false);
+      publishRelayStatus(TOPIC_STATUS_POMPA_DOLOMIT.c_str(), false);
 
       aeratorBackupState = true;
 
       digitalWrite(RELAY_AERATOR_BACKUP, LOW);
 
-      publishRelayStatus("kolam1/status/aerator_backup", true);
+      publishRelayStatus(TOPIC_STATUS_AERATOR_BACKUP.c_str(), true);
 
       dosingState = AERATION;
 
@@ -609,7 +639,7 @@ void autoControl(float ph, float doValue) {
 
       digitalWrite(RELAY_AERATOR_BACKUP, HIGH);
 
-      publishRelayStatus("kolam1/status/aerator_backup", false);
+      publishRelayStatus(TOPIC_STATUS_AERATOR_BACKUP.c_str(), false);
 
       dosingState = IDLE;
 
@@ -838,9 +868,9 @@ void loop() {
     // =================================================
     // PUBLISH SENSOR
     // =================================================
-    publishSensor("kolam1/sensor/suhu", suhuGlobal, "C");
-    publishSensor("kolam1/sensor/ph", phGlobal, "pH");
-    publishSensor("kolam1/sensor/do", doGlobal, "mg/L");
+    publishSensor(TOPIC_SENSOR_SUHU.c_str(), suhuGlobal, "C");
+    publishSensor(TOPIC_SENSOR_PH.c_str(), phGlobal, "pH");
+    publishSensor(TOPIC_SENSOR_DO.c_str(), doGlobal, "mg/L");
   }
 
   // ===================================================

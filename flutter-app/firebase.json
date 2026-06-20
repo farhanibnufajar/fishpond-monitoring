@@ -1,1 +1,36 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"iot-kolam-ikan","appId":"1:995533624756:android:a646e4f4b0dfc6be8a8ee1","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"iot-kolam-ikan","configurations":{"android":"1:995533624756:android:a646e4f4b0dfc6be8a8ee1","windows":"1:995533624756:web:f1ed0f066d5371128a8ee1"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "iot-kolam-ikan",
+          "appId": "1:995533624756:android:a646e4f4b0dfc6be8a8ee1",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "iot-kolam-ikan",
+          "configurations": {
+            "android": "1:995533624756:android:a646e4f4b0dfc6be8a8ee1",
+            "windows": "1:995533624756:web:f1ed0f066d5371128a8ee1"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

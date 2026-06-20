@@ -57,7 +57,6 @@ class DefaultFirebaseOptions {
     projectId: 'iot-kolam-ikan',
     storageBucket: 'iot-kolam-ikan.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAI68vbzdI_cyQurYFctBUtN0La_LsIlOc',
     appId: '1:995533624756:ios:e981de29dc0294188a8ee1',
@@ -85,5 +84,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'iot-kolam-ikan.firebasestorage.app',
     measurementId: 'G-RP4E2KQG31',
   );
-
 }
